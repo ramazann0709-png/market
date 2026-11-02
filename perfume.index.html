@@ -1,0 +1,1701 @@
+<!DOCTYPE html>
+<html lang="ru" class="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no, viewport-fit=cover">
+  <title>AURA PRIVÉE | Haute Parfumerie & Décantage</title>
+  <script src="https://telegram.org/js/telegram-web-app.js"></script>
+  <script src="https://cdn.tailwindcss.com/3.4.17"></script>
+  <script>
+    tailwind.config = {
+      darkMode: 'class',
+      theme: {
+        extend: {
+          colors: {
+            obsidian: '#07080a',
+            carbon: '#0e1117',
+            graphite: '#151922',
+            titanium: '#242a38',
+            gold: {
+              400: '#e5c07b',
+              500: '#d4af37',
+              600: '#b89628',
+              glow: 'rgba(212, 175, 55, 0.25)'
+            },
+            silver: '#e2e8f0'
+          },
+          fontFamily: {
+            serif: ['Cinzel', 'Playfair Display', 'Georgia', 'serif'],
+            sans: ['-apple-system', 'BlinkMacSystemFont', 'SF Pro Display', 'Inter', 'sans-serif']
+          }
+        }
+      }
+    }
+  </script>
+  <style>
+    /* iOS 26/27 Futuristic Liquid Glass System */
+    :root {
+      --liquid-bg: rgba(15, 18, 26, 0.62);
+      --liquid-border: rgba(255, 255, 255, 0.12);
+      --liquid-shine: rgba(255, 255, 255, 0.22);
+      --liquid-glow: rgba(212, 175, 55, 0.15);
+      --glass-blur: 28px;
+    }
+
+    body {
+      background-color: #060709;
+      background-image: 
+        radial-gradient(at 0% 0%, rgba(35, 45, 65, 0.22) 0px, transparent 50%),
+        radial-gradient(at 100% 10%, rgba(55, 40, 20, 0.15) 0px, transparent 50%),
+        radial-gradient(at 50% 100%, rgba(20, 28, 45, 0.25) 0px, transparent 60%);
+      background-attachment: fixed;
+      color: #f1f5f9;
+      font-family: -apple-system, BlinkMacSystemFont, "SF Pro Text", Inter, sans-serif;
+      -webkit-font-smoothing: antialiased;
+      -webkit-tap-highlight-color: transparent;
+      user-select: none;
+      overflow-x: hidden;
+    }
+
+    /* Liquid Glass Morphic Card */
+    .liquid-glass {
+      background: var(--liquid-bg);
+      backdrop-filter: blur(var(--glass-blur)) saturate(200%);
+      -webkit-backdrop-filter: blur(var(--glass-blur)) saturate(200%);
+      border: 1px solid var(--liquid-border);
+      box-shadow: 
+        inset 0 1px 1px 0 var(--liquid-shine),
+        inset 0 -1px 1px 0 rgba(0, 0, 0, 0.3),
+        0 12px 36px -8px rgba(0, 0, 0, 0.7);
+    }
+
+    /* Ultra Liquid Specular Glass */
+    .liquid-specular {
+      background: linear-gradient(135deg, rgba(255, 255, 255, 0.08) 0%, rgba(255, 255, 255, 0.02) 100%), var(--liquid-bg);
+      backdrop-filter: blur(32px) saturate(220%);
+      -webkit-backdrop-filter: blur(32px) saturate(220%);
+      border: 1px solid rgba(255, 255, 255, 0.16);
+      box-shadow: 
+        inset 0 1.5px 2px 0 rgba(255, 255, 255, 0.35),
+        0 20px 48px -12px rgba(0, 0, 0, 0.85);
+    }
+
+    /* Liquid interactive button */
+    .liquid-btn {
+      position: relative;
+      overflow: hidden;
+      transition: all 0.25s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    .liquid-btn::before {
+      content: '';
+      position: absolute;
+      top: 0; left: -100%; width: 100%; height: 100%;
+      background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.15), transparent);
+      transition: 0.5s;
+    }
+    .liquid-btn:active::before {
+      left: 100%;
+    }
+    .liquid-btn:active {
+      transform: scale(0.97);
+    }
+
+    /* Smooth page fade transition */
+    .page-view {
+      transition: opacity 0.22s ease, transform 0.22s cubic-bezier(0.16, 1, 0.3, 1);
+    }
+    .page-view.hidden {
+      display: none;
+      opacity: 0;
+      transform: translateY(8px);
+    }
+
+    /* Custom sleek scrollbar */
+    ::-webkit-scrollbar {
+      width: 4px;
+      height: 4px;
+    }
+    ::-webkit-scrollbar-track {
+      background: transparent;
+    }
+    ::-webkit-scrollbar-thumb {
+      background: rgba(255, 255, 255, 0.15);
+      border-radius: 9999px;
+    }
+
+    .gold-glow {
+      box-shadow: 0 0 20px rgba(212, 175, 55, 0.22);
+    }
+  </style>
+</head>
+<body class="min-h-screen pb-28 text-slate-100 flex flex-col justify-between">
+
+  <!-- TOP BAR / HEADER -->
+  <header class="sticky top-0 z-40 px-4 py-3 liquid-glass border-b border-white/10 flex items-center justify-between">
+    <!-- Brand / Hidden Admin Trigger (5 clicks) -->
+    <div id="brand-trigger" onclick="handleBrandClick()" class="flex items-center space-x-2.5 cursor-pointer select-none active:opacity-75 transition-opacity" title="AURA PRIVÉE (нажмите 5 раз для входа в админку)">
+      <div class="w-8 h-8 rounded-full bg-gradient-to-br from-white/20 to-white/5 border border-white/25 flex items-center justify-center shadow-inner">
+        <span class="text-xs font-serif font-bold tracking-widest text-gold-400">AP</span>
+      </div>
+      <div>
+        <div class="flex items-center space-x-1.5">
+          <span class="font-serif tracking-widest text-sm font-semibold uppercase text-white">AURA PRIVÉE</span>
+          <span class="text-[9px] uppercase px-1.5 py-0.5 rounded-full bg-gold-500/20 text-gold-400 border border-gold-500/30 font-medium">Niche</span>
+        </div>
+        <p class="text-[10px] text-slate-400 tracking-wider">Haute Parfumerie & Décantage</p>
+      </div>
+    </div>
+
+    <!-- Quick Actions: Search focus & Cart -->
+    <div class="flex items-center space-x-2">
+      <!-- Admin status badge (visible when logged in) -->
+      <button id="admin-header-badge" class="hidden items-center space-x-1 px-2.5 py-1 rounded-full bg-amber-500/20 border border-amber-400/40 text-[10px] text-amber-300 font-medium" onclick="navigateTo('admin')">
+        <svg class="w-3 h-3 text-amber-400" fill="currentColor" viewBox="0 0 20 20"><path d="M10 2a4 4 0 00-4 4v1H5a2 2 0 00-2 2v7a2 2 0 002 2h10a2 2 0 002-2v-7a2 2 0 00-2-2h-1V6a4 4 0 00-4-4zm2 5V6a2 2 0 10-4 0v1h4z"/></svg>
+        <span>Админ</span>
+      </button>
+
+      <!-- Cart Button in Header -->
+      <button id="header-cart-btn" onclick="navigateTo('cart')" class="relative liquid-btn w-9 h-9 rounded-full liquid-glass flex items-center justify-center border border-white/15 text-slate-200">
+        <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"/>
+        </svg>
+        <span id="header-cart-count" class="hidden absolute -top-1 -right-1 w-4 h-4 rounded-full bg-gradient-to-r from-amber-500 to-amber-600 text-black text-[9px] font-bold items-center justify-center shadow-lg">0</span>
+      </button>
+    </div>
+  </header>
+
+  <!-- MAIN VIEW CONTAINER -->
+  <main class="flex-1 max-w-2xl w-full mx-auto px-4 pt-3 pb-8">
+
+    <!-- ============================================== -->
+    <!-- VIEW 1: CATALOG (КАТАЛОГ АРОМАТОВ)            -->
+    <!-- ============================================== -->
+    <section id="view-catalog" class="page-view space-y-4">
+      
+      <!-- Luxury Hero Banner (Liquid Glass) -->
+      <div class="relative overflow-hidden rounded-3xl p-5 liquid-specular border border-white/20">
+        <div class="absolute -right-10 -bottom-10 w-44 h-44 rounded-full bg-gold-500/10 blur-3xl pointer-events-none"></div>
+        <div class="relative z-10 space-y-1.5">
+          <div class="inline-flex items-center space-x-1.5 px-2.5 py-0.5 rounded-full bg-white/10 border border-white/15 text-[10px] tracking-widest uppercase text-gold-400 font-medium">
+            <span class="w-1.5 h-1.5 rounded-full bg-emerald-400 animate-pulse"></span>
+            <span>100% Оригинал • Распив & Флаконы</span>
+          </div>
+          <h1 class="text-xl font-serif tracking-wide text-white font-medium">Селективная парфюмерия</h1>
+          <p class="text-xs text-slate-300 leading-relaxed max-w-sm">
+            Откройте шедевры мировой ниши от <span class="text-gold-400 font-medium">10 мл</span> на пробу или закажите новый запечатанный флакон.
+          </p>
+        </div>
+      </div>
+
+      <!-- Search & Filters -->
+      <div class="space-y-2.5">
+        <!-- Search bar -->
+        <div class="relative">
+          <div class="absolute inset-y-0 left-0 pl-3.5 flex items-center pointer-events-none text-slate-400">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"/></svg>
+          </div>
+          <input 
+            type="text" 
+            id="search-input" 
+            oninput="handleSearch(this.value)"
+            placeholder="Поиск по аромату, бренду или нотам..." 
+            class="w-full pl-10 pr-10 py-2.5 text-xs rounded-2xl liquid-glass border border-white/15 focus:outline-none focus:border-gold-500/60 text-slate-100 placeholder-slate-400 transition-colors"
+          >
+          <button id="clear-search-btn" class="hidden absolute inset-y-0 right-0 pr-3.5 flex items-center text-slate-400 hover:text-white" onclick="clearSearch()">
+            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+          </button>
+        </div>
+
+        <!-- Category Pills (Horizontal Scroll) -->
+        <div class="flex items-center space-x-2 overflow-x-auto pb-1 scrollbar-none text-xs">
+          <button class="cat-pill active px-3.5 py-1.5 rounded-xl liquid-glass border border-gold-500/40 text-gold-400 font-medium whitespace-nowrap transition-all" data-cat="all" onclick="filterCategory('all', this)">Все ароматы</button>
+          <button class="cat-pill px-3.5 py-1.5 rounded-xl liquid-glass border border-white/10 text-slate-300 whitespace-nowrap transition-all" data-cat="Ниша" onclick="filterCategory('Ниша', this)">Ниша</button>
+          <button class="cat-pill px-3.5 py-1.5 rounded-xl liquid-glass border border-white/10 text-slate-300 whitespace-nowrap transition-all" data-cat="Люкс" onclick="filterCategory('Люкс', this)">Люкс</button>
+          <button class="cat-pill px-3.5 py-1.5 rounded-xl liquid-glass border border-white/10 text-slate-300 whitespace-nowrap transition-all" data-cat="Восточные" onclick="filterCategory('Восточные', this)">Восточные</button>
+          <button class="cat-pill px-3.5 py-1.5 rounded-xl liquid-glass border border-white/10 text-slate-300 whitespace-nowrap transition-all" data-cat="Древесные" onclick="filterCategory('Древесные', this)">Древесные</button>
+          <button class="cat-pill px-3.5 py-1.5 rounded-xl liquid-glass border border-white/10 text-slate-300 whitespace-nowrap transition-all" data-cat="Свежие" onclick="filterCategory('Свежие', this)">Свежие</button>
+        </div>
+      </div>
+
+      <!-- Perfume Products Grid -->
+      <div id="perfume-grid" class="grid grid-cols-2 gap-3.5 pt-1">
+        <!-- Rendered dynamically via JS -->
+      </div>
+
+      <!-- Empty State for Search/Filters -->
+      <div id="catalog-empty" class="hidden text-center py-12 space-y-3 liquid-glass rounded-3xl p-6 border border-white/10">
+        <div class="w-12 h-12 mx-auto rounded-full bg-white/5 border border-white/10 flex items-center justify-center text-slate-400">
+          <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M9.172 16.172a4 4 0 015.656 0M9 10h.01M15 10h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"/></svg>
+        </div>
+        <p class="text-sm font-medium text-slate-200">Ароматы не найдены</p>
+        <p class="text-xs text-slate-400">Попробуйте изменить поисковый запрос или выбрать другую категорию</p>
+        <button onclick="clearSearch()" class="liquid-btn px-4 py-2 rounded-xl bg-white/10 text-xs text-white border border-white/15">Сбросить фильтры</button>
+      </div>
+
+    </section>
+
+    <!-- ============================================== -->
+    <!-- VIEW 2: PRODUCT DETAILS & VOLUME SELECTOR      -->
+    <!-- ============================================== -->
+    <section id="view-details" class="page-view hidden space-y-4">
+      <!-- Back Header -->
+      <div class="flex items-center justify-between pb-1">
+        <button onclick="navigateTo('catalog')" class="liquid-btn inline-flex items-center space-x-1.5 px-3 py-1.5 rounded-2xl liquid-glass border border-white/15 text-xs text-slate-200">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M15 19l-7-7 7-7"/></svg>
+          <span>В каталог</span>
+        </button>
+        <span id="detail-brand-badge" class="text-[11px] uppercase tracking-widest font-serif text-gold-400 px-2 py-0.5 rounded-lg bg-gold-500/10 border border-gold-500/20">Brand</span>
+      </div>
+
+      <!-- Main Product Presentation Card -->
+      <div class="liquid-specular rounded-3xl p-4 border border-white/20 space-y-4">
+        <!-- Perfume Large Photo with Liquid Specular Sheen -->
+        <div class="relative w-full aspect-square rounded-2xl overflow-hidden bg-black/40 border border-white/15 shadow-2xl flex items-center justify-center">
+          <img id="detail-img" src="" alt="Perfume" class="w-full h-full object-cover transition-transform duration-500 hover:scale-105">
+          <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-black/20 pointer-events-none"></div>
+          <span id="detail-badge" class="absolute top-3 left-3 text-[10px] uppercase font-semibold px-2.5 py-1 rounded-full bg-gold-500/80 text-black shadow-lg">Хит</span>
+          <span id="detail-concentration" class="absolute bottom-3 left-3 text-[10px] tracking-wider text-slate-300 px-2.5 py-1 rounded-full bg-black/60 backdrop-blur-md border border-white/10">Extrait de Parfum</span>
+        </div>
+
+        <!-- Title & Brand -->
+        <div class="space-y-1">
+          <p id="detail-brand" class="text-xs uppercase tracking-widest text-slate-400 font-serif">Brand Name</p>
+          <h2 id="detail-title" class="text-xl font-serif font-medium text-white tracking-wide">Fragrance Name</h2>
+          <p id="detail-desc" class="text-xs text-slate-300 leading-relaxed pt-1">Description goes here.</p>
+        </div>
+
+        <!-- Olfactory Notes (Pyramid) -->
+        <div class="rounded-2xl liquid-glass p-3.5 border border-white/10 space-y-2 text-xs">
+          <div class="flex items-center space-x-1.5 text-gold-400 font-medium uppercase tracking-wider text-[10px]">
+            <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M19.428 15.428a2 2 0 00-1.022-.547l-2.387-.477a6 6 0 00-3.86.517l-.318.158a6 6 0 01-3.86.517L6.05 15.21a2 2 0 00-1.806.547M8 4h8l-1 1v5.172a2 2 0 00.586 1.414l5 5c1.26 1.26.367 3.414-1.415 3.414H4.828c-1.782 0-2.674-2.154-1.414-3.414l5-5A2 2 0 009 10.172V5L8 4z"/></svg>
+            <span>Ольфакторная пирамида</span>
+          </div>
+          <div class="grid grid-cols-1 gap-1.5 text-[11px]">
+            <div class="flex items-start space-x-2"><span class="text-slate-400 w-16 shrink-0">Верхние:</span><span id="detail-notes-top" class="text-slate-200">Вишня, Миндаль</span></div>
+            <div class="flex items-start space-x-2"><span class="text-slate-400 w-16 shrink-0">Сердце:</span><span id="detail-notes-heart" class="text-slate-200">Ликёр, Роза, Жасмин</span></div>
+            <div class="flex items-start space-x-2"><span class="text-slate-400 w-16 shrink-0">База:</span><span id="detail-notes-base" class="text-slate-200">Уд, Сандал, Ваниль</span></div>
+          </div>
+        </div>
+
+        <!-- VOLUME SELECTOR (10, 20, 30, 50 ml распив OR 100 ml флакон) -->
+        <div class="space-y-2.5 pt-1">
+          <div class="flex items-center justify-between">
+            <label class="text-xs font-semibold tracking-wider uppercase text-slate-300">Выберите объём:</label>
+            <span id="volume-type-hint" class="text-[11px] text-gold-400">Стеклянный атомайзер</span>
+          </div>
+
+          <!-- Volume Selector Pills -->
+          <div class="grid grid-cols-5 gap-1.5" id="volume-selector-container">
+            <!-- 10 ml -->
+            <button type="button" class="volume-btn liquid-btn active flex flex-col items-center justify-center py-2 px-1 rounded-2xl liquid-glass border border-gold-500/40 text-gold-400 transition-all text-center" data-vol="10" onclick="selectVolume('10')">
+              <span class="text-xs font-bold text-white">10 мл</span>
+              <span class="text-[9px] text-slate-300">распив</span>
+            </button>
+            <!-- 20 ml -->
+            <button type="button" class="volume-btn liquid-btn flex flex-col items-center justify-center py-2 px-1 rounded-2xl liquid-glass border border-white/10 transition-all text-center text-slate-400" data-vol="20" onclick="selectVolume('20')">
+              <span class="text-xs font-bold text-white">20 мл</span>
+              <span class="text-[9px] text-slate-400">распив</span>
+            </button>
+            <!-- 30 ml -->
+            <button type="button" class="volume-btn liquid-btn flex flex-col items-center justify-center py-2 px-1 rounded-2xl liquid-glass border border-white/10 transition-all text-center text-slate-400" data-vol="30" onclick="selectVolume('30')">
+              <span class="text-xs font-bold text-white">30 мл</span>
+              <span class="text-[9px] text-slate-400">распив</span>
+            </button>
+            <!-- 50 ml -->
+            <button type="button" class="volume-btn liquid-btn flex flex-col items-center justify-center py-2 px-1 rounded-2xl liquid-glass border border-white/10 transition-all text-center text-slate-400" data-vol="50" onclick="selectVolume('50')">
+              <span class="text-xs font-bold text-white">50 мл</span>
+              <span class="text-[9px] text-slate-400">распив</span>
+            </button>
+            <!-- Full bottle 100 ml -->
+            <button type="button" class="volume-btn liquid-btn flex flex-col items-center justify-center py-2 px-1 rounded-2xl liquid-glass border border-white/10 transition-all text-center text-slate-400" data-vol="100" onclick="selectVolume('100')">
+              <span class="text-xs font-bold text-gold-400">Флакон</span>
+              <span class="text-[9px] text-gold-500/80">100 мл</span>
+            </button>
+          </div>
+
+          <!-- Volume Description Visual Badge -->
+          <div id="volume-packaging-box" class="flex items-center space-x-2.5 p-2.5 rounded-2xl bg-white/5 border border-white/10 text-xs text-slate-300">
+            <div id="volume-icon-box" class="w-7 h-7 rounded-xl bg-gold-500/15 border border-gold-500/30 flex items-center justify-center text-gold-400 shrink-0">
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M19 11H5m14 0a2 2 0 012 2v6a2 2 0 01-2 2H5a2 2 0 01-2-2v-6a2 2 0 012-2m14 0V9a2 2 0 00-2-2M5 11V9a2 2 0 012-2m0 0V5a2 2 0 012-2h6a2 2 0 012 2v2M7 7h10"/></svg>
+            </div>
+            <p id="volume-packaging-text" class="text-[11px] text-slate-300">
+              Премиальный стеклянный атомайзер 10 мл с металлическим микроспреем.
+            </p>
+          </div>
+        </div>
+
+        <!-- Quantity & Price & Add To Cart Button -->
+        <div class="pt-2 space-y-3">
+          <div class="flex items-center justify-between">
+            <div>
+              <span class="text-[10px] uppercase text-slate-400 tracking-wider">Цена за выбранный объём:</span>
+              <div class="text-2xl font-serif font-semibold text-white tracking-tight flex items-baseline space-x-1">
+                <span id="detail-price-display">0</span>
+                <span class="text-sm font-sans text-gold-400">₽</span>
+              </div>
+            </div>
+
+            <!-- Quantity selector -->
+            <div class="flex items-center space-x-2 liquid-glass rounded-2xl p-1 border border-white/15">
+              <button onclick="changeDetailQty(-1)" class="w-7 h-7 rounded-xl bg-white/10 hover:bg-white/20 active:scale-90 transition-all flex items-center justify-center text-white font-bold text-sm">-</button>
+              <span id="detail-qty" class="w-6 text-center text-xs font-semibold text-white">1</span>
+              <button onclick="changeDetailQty(1)" class="w-7 h-7 rounded-xl bg-white/10 hover:bg-white/20 active:scale-90 transition-all flex items-center justify-center text-white font-bold text-sm">+</button>
+            </div>
+          </div>
+
+          <!-- Add to Cart CTA -->
+          <button id="add-to-cart-cta" onclick="addCurrentToCart()" class="liquid-btn w-full py-3.5 px-4 rounded-2xl bg-gradient-to-r from-amber-500 via-amber-400 to-amber-600 text-black font-semibold text-sm tracking-wide shadow-xl flex items-center justify-center space-x-2">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"/></svg>
+            <span id="cta-add-text">В корзину • 0 ₽</span>
+          </button>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============================================== -->
+    <!-- VIEW 3: CART & CHECKOUT (КОРЗИНА И ОФОРМЛЕНИЕ) -->
+    <!-- ============================================== -->
+    <section id="view-cart" class="page-view hidden space-y-4">
+      <div class="flex items-center justify-between">
+        <h2 class="text-lg font-serif font-medium text-white tracking-wide">Корзина заказов</h2>
+        <button id="clear-cart-btn" onclick="clearCart()" class="text-xs text-rose-400 hover:text-rose-300">Очистить</button>
+      </div>
+
+      <!-- Cart Items List Container -->
+      <div id="cart-items-container" class="space-y-2.5">
+        <!-- Rendered dynamically via JS -->
+      </div>
+
+      <!-- Empty Cart State -->
+      <div id="cart-empty" class="hidden text-center py-12 space-y-3 liquid-glass rounded-3xl p-6 border border-white/10">
+        <div class="w-14 h-14 mx-auto rounded-full bg-white/5 border border-white/10 flex items-center justify-center text-slate-400">
+          <svg class="w-7 h-7" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="1.5" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"/></svg>
+        </div>
+        <h3 class="text-sm font-medium text-slate-200 font-serif">Ваша корзина пуста</h3>
+        <p class="text-xs text-slate-400 max-w-xs mx-auto">Выберите объём на распив от 10 мл или целый флакон в нашем каталоге.</p>
+        <button onclick="navigateTo('catalog')" class="liquid-btn px-5 py-2.5 rounded-2xl bg-gradient-to-r from-amber-500 to-amber-600 text-black font-semibold text-xs tracking-wide">В каталог ароматов</button>
+      </div>
+
+      <!-- Checkout Form & Totals (Hidden if empty) -->
+      <div id="checkout-section" class="space-y-4">
+        <!-- Order Summary Card -->
+        <div class="liquid-glass rounded-3xl p-4 border border-white/15 space-y-2.5 text-xs">
+          <div class="flex justify-between text-slate-300">
+            <span>Позиций в заказе:</span>
+            <span id="cart-total-qty" class="text-white font-medium">0 шт.</span>
+          </div>
+          <div class="flex justify-between text-slate-300">
+            <span>Атомайзеры & Упаковка:</span>
+            <span class="text-emerald-400 font-medium">Бесплатно (Подарок)</span>
+          </div>
+          <div class="flex justify-between text-slate-300">
+            <span>Доставка по РФ:</span>
+            <span class="text-slate-200 font-medium">СДЭК / Почта / Курьер</span>
+          </div>
+          <div class="border-t border-white/10 pt-2 flex justify-between items-baseline">
+            <span class="text-sm font-medium text-white">Итого к оплате:</span>
+            <span id="cart-grand-total" class="text-xl font-serif font-bold text-gold-400">0 ₽</span>
+          </div>
+        </div>
+
+        <!-- Customer Delivery Information -->
+        <div class="liquid-specular rounded-3xl p-4 border border-white/20 space-y-3">
+          <div class="flex items-center space-x-1.5 text-gold-400 text-xs font-semibold uppercase tracking-wider">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M17.657 16.657L13.414 20.9a1.998 1.998 0 01-2.827 0l-4.244-4.243a8 8 0 1111.314 0z"/><path stroke-linecap="round" stroke-linejoin="round" d="M15 11a3 3 0 11-6 0 3 3 0 016 0z"/></svg>
+            <span>Данные для доставки</span>
+          </div>
+
+          <div class="space-y-2 text-xs">
+            <div>
+              <label class="block text-[11px] text-slate-300 mb-1">Имя и Фамилия получателя <span class="text-amber-400">*</span></label>
+              <input id="order-name" type="text" placeholder="Константин Романов" class="w-full px-3 py-2 rounded-xl liquid-glass border border-white/15 text-white placeholder-slate-500 focus:outline-none focus:border-gold-500/60">
+            </div>
+
+            <div>
+              <label class="block text-[11px] text-slate-300 mb-1">Номер телефона <span class="text-amber-400">*</span></label>
+              <input id="order-phone" type="tel" placeholder="+7 (999) 000-00-00" class="w-full px-3 py-2 rounded-xl liquid-glass border border-white/15 text-white placeholder-slate-500 focus:outline-none focus:border-gold-500/60">
+            </div>
+
+            <div>
+              <label class="block text-[11px] text-slate-300 mb-1">Город и адрес доставки (или ПВЗ СДЭК) <span class="text-amber-400">*</span></label>
+              <input id="order-address" type="text" placeholder="г. Москва, ул. Тверская 12 или пункт СДЭК..." class="w-full px-3 py-2 rounded-xl liquid-glass border border-white/15 text-white placeholder-slate-500 focus:outline-none focus:border-gold-500/60">
+            </div>
+
+            <div>
+              <label class="block text-[11px] text-slate-300 mb-1">Способ получения</label>
+              <select id="order-delivery-method" class="w-full px-3 py-2 rounded-xl liquid-glass border border-white/15 text-white bg-slate-900 focus:outline-none focus:border-gold-500/60">
+                <option value="СДЭК (ПВЗ или курьер)">СДЭК (Пункт выдачи или курьер)</option>
+                <option value="Почта России / EMS">Почта России / EMS</option>
+                <option value="Курьер по Москве (день в день)">Курьер по Москве (день в день)</option>
+                <option value="Самовывоз из бутика">Самовывоз из бутика</option>
+              </select>
+            </div>
+
+            <div>
+              <label class="block text-[11px] text-slate-300 mb-1">Комментарий к заказу</label>
+              <input id="order-comment" type="text" placeholder="Удобное время звонка или особые пожелания..." class="w-full px-3 py-2 rounded-xl liquid-glass border border-white/15 text-white placeholder-slate-500 focus:outline-none focus:border-gold-500/60">
+            </div>
+          </div>
+
+          <!-- Submit Order CTA -->
+          <button id="submit-order-btn" onclick="submitOrder()" class="liquid-btn w-full py-3.5 px-4 rounded-2xl bg-gradient-to-r from-amber-500 via-amber-400 to-amber-600 text-black font-bold text-sm tracking-wide shadow-xl flex items-center justify-center space-x-2 mt-3">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>
+            <span>Оформить заказ в Telegram</span>
+          </button>
+          <p class="text-[10px] text-center text-slate-400">Данные заказа будут мгновенно переданы менеджеру бутика</p>
+        </div>
+      </div>
+    </section>
+
+    <!-- ============================================== -->
+    <!-- VIEW 4: MY ORDERS & BOUTIQUE INFO             -->
+    <!-- ============================================== -->
+    <section id="view-orders" class="page-view hidden space-y-4">
+      <div class="flex items-center justify-between">
+        <h2 class="text-lg font-serif font-medium text-white tracking-wide">Мои заказы & Сервис</h2>
+      </div>
+
+      <!-- Decant Quality Guarantee Card -->
+      <div class="liquid-specular rounded-3xl p-4 border border-white/20 space-y-3">
+        <div class="flex items-center space-x-2 text-gold-400">
+          <svg class="w-5 h-5" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 12l2 2 4-4m5.618-4.016A11.955 11.955 0 0112 2.944a11.955 11.955 0 01-8.618 3.04A12.02 12.02 0 003 9c0 5.591 3.824 10.29 9 11.622 5.176-1.332 9-6.03 9-11.622 0-1.042-.133-2.052-.382-3.016z"/></svg>
+          <h3 class="font-serif font-medium text-sm text-white">Стандарты качества AURA PRIVÉE</h3>
+        </div>
+        <div class="space-y-2 text-xs text-slate-300 leading-relaxed">
+          <div class="flex items-start space-x-2">
+            <span class="text-gold-400 font-bold">•</span>
+            <span><strong class="text-white">100% аутентичность:</strong> парфюмерия закупается исключительно у официальных дистрибьюторов в Европе и ОАЭ.</span>
+          </div>
+          <div class="flex items-start space-x-2">
+            <span class="text-gold-400 font-bold">•</span>
+            <span><strong class="text-white">Стерильный распив:</strong> отбор производится одноразовыми медицинскими инструментами без контакта с воздухом.</span>
+          </div>
+          <div class="flex items-start space-x-2">
+            <span class="text-gold-400 font-bold">•</span>
+            <span><strong class="text-white">Премиум атомайзеры:</strong> прочное стекло, плотная резьба и металлический микроспрей без протеканий.</span>
+          </div>
+        </div>
+      </div>
+
+      <!-- History of Placed Orders -->
+      <div class="space-y-2.5">
+        <h3 class="text-xs font-semibold uppercase tracking-wider text-slate-400">История недавних заказов</h3>
+        <div id="orders-history-list" class="space-y-2.5">
+          <!-- Populated from localStorage -->
+        </div>
+      </div>
+
+      <!-- Boutique Contact and Hidden Entrance Button -->
+      <div class="liquid-glass rounded-3xl p-4 border border-white/10 space-y-3 text-center">
+        <p class="text-xs text-slate-400">Консультация парфюмерного сомелье:</p>
+        <div class="flex justify-center space-x-3">
+          <button onclick="openTelegramSupport()" class="liquid-btn px-4 py-2 rounded-xl bg-white/10 border border-white/15 text-xs text-white">Написать в Telegram</button>
+        </div>
+        
+
+      </div>
+    </section>
+
+    <!-- ============================================== -->
+    <!-- VIEW 5: ADMIN PANEL (СКРЫТАЯ АДМИН-ПАНЕЛЬ)    -->
+    <!-- ============================================== -->
+    <section id="view-admin" class="page-view hidden space-y-4">
+      <!-- Admin Top Navigation -->
+      <div class="flex items-center justify-between">
+        <div class="flex items-center space-x-2">
+          <span class="w-2.5 h-2.5 rounded-full bg-emerald-400 animate-pulse"></span>
+          <h2 class="text-lg font-serif font-medium text-white tracking-wide">Панель администратора</h2>
+        </div>
+        <button onclick="adminLogout()" class="liquid-btn px-3 py-1 rounded-xl bg-rose-500/20 border border-rose-500/40 text-[11px] text-rose-300">
+          Выйти
+        </button>
+      </div>
+
+      <!-- Admin Tabs Navigation -->
+      <div class="flex space-x-1.5 p-1 rounded-2xl liquid-glass border border-white/15 text-xs">
+        <button class="admin-tab active flex-1 py-1.5 rounded-xl bg-white/15 text-white font-medium text-center" data-tab="admin-add" onclick="switchAdminTab('admin-add', this)">
+          + Добавить парфюм
+        </button>
+        <button class="admin-tab flex-1 py-1.5 rounded-xl text-slate-400 font-medium text-center hover:text-white" data-tab="admin-catalog" onclick="switchAdminTab('admin-catalog', this)">
+          Каталог (<span id="admin-count">0</span>)
+        </button>
+        <button class="admin-tab flex-1 py-1.5 rounded-xl text-slate-400 font-medium text-center hover:text-white" data-tab="admin-orders" onclick="switchAdminTab('admin-orders', this)">
+          Заказы (<span id="admin-orders-count">0</span>)
+        </button>
+      </div>
+
+      <!-- TAB 1: ADD NEW FRAGRANCE FORM -->
+      <div id="tab-admin-add" class="admin-tab-content space-y-3 liquid-specular rounded-3xl p-4 border border-white/20">
+        <div class="flex items-center justify-between border-b border-white/10 pb-2">
+          <h3 class="text-sm font-semibold text-gold-400 uppercase tracking-wider">Новая позиция в бутике</h3>
+          <span class="text-[10px] text-slate-400">Цены на все 5 объёмов</span>
+        </div>
+
+        <form id="add-perfume-form" onsubmit="event.preventDefault(); saveNewFragrance();" class="space-y-3 text-xs">
+          <!-- Title & Brand -->
+          <div class="grid grid-cols-2 gap-2">
+            <div>
+              <label class="block text-[11px] text-slate-300 mb-1">Название аромата <span class="text-amber-400">*</span></label>
+              <input id="new-title" type="text" required placeholder="Напр., Grand Soir" class="w-full px-3 py-2 rounded-xl liquid-glass border border-white/15 text-white placeholder-slate-500 focus:outline-none focus:border-gold-500/60">
+            </div>
+            <div>
+              <label class="block text-[11px] text-slate-300 mb-1">Бренд / Парфюмерный дом <span class="text-amber-400">*</span></label>
+              <input id="new-brand" type="text" required placeholder="Напр., Maison Francis Kurkdjian" class="w-full px-3 py-2 rounded-xl liquid-glass border border-white/15 text-white placeholder-slate-500 focus:outline-none focus:border-gold-500/60">
+            </div>
+          </div>
+
+          <!-- Category, Concentration & Badge -->
+          <div class="grid grid-cols-3 gap-2">
+            <div>
+              <label class="block text-[11px] text-slate-300 mb-1">Категория</label>
+              <select id="new-category" class="w-full px-2.5 py-2 rounded-xl liquid-glass border border-white/15 text-white bg-slate-900 focus:outline-none">
+                <option value="Ниша">Ниша</option>
+                <option value="Люкс">Люкс</option>
+                <option value="Восточные">Восточные</option>
+                <option value="Древесные">Древесные</option>
+                <option value="Свежие">Свежие</option>
+                <option value="Цитрусовые">Цитрусовые</option>
+              </select>
+            </div>
+            <div>
+              <label class="block text-[11px] text-slate-300 mb-1">Концентрация</label>
+              <input id="new-concentration" type="text" placeholder="Extrait de Parfum" value="Extrait de Parfum" class="w-full px-2.5 py-2 rounded-xl liquid-glass border border-white/15 text-white placeholder-slate-500 focus:outline-none">
+            </div>
+            <div>
+              <label class="block text-[11px] text-slate-300 mb-1">Бейдж</label>
+              <select id="new-badge" class="w-full px-2.5 py-2 rounded-xl liquid-glass border border-white/15 text-white bg-slate-900 focus:outline-none">
+                <option value="Хит">Хит</option>
+                <option value="Новинка">Новинка</option>
+                <option value="Эксклюзив">Эксклюзив</option>
+                <option value="Бестселлер">Бестселлер</option>
+                <option value="Лимитировано">Лимитировано</option>
+              </select>
+            </div>
+          </div>
+
+          <!-- Description -->
+          <div>
+            <label class="block text-[11px] text-slate-300 mb-1">Описание аромата</label>
+            <textarea id="new-desc" rows="2" placeholder="Опишите характер звучания, шлейф и стойкость..." class="w-full px-3 py-2 rounded-xl liquid-glass border border-white/15 text-white placeholder-slate-500 focus:outline-none"></textarea>
+          </div>
+
+          <!-- Olfactory Notes -->
+          <div class="grid grid-cols-3 gap-2">
+            <div>
+              <label class="block text-[10px] text-slate-400 mb-1">Верхние ноты</label>
+              <input id="new-notes-top" type="text" placeholder="Бергамот, Шафран" class="w-full px-2 py-1.5 rounded-lg liquid-glass border border-white/10 text-white placeholder-slate-500 text-[11px]">
+            </div>
+            <div>
+              <label class="block text-[10px] text-slate-400 mb-1">Ноты сердца</label>
+              <input id="new-notes-heart" type="text" placeholder="Амбра, Роза" class="w-full px-2 py-1.5 rounded-lg liquid-glass border border-white/10 text-white placeholder-slate-500 text-[11px]">
+            </div>
+            <div>
+              <label class="block text-[10px] text-slate-400 mb-1">Базовые ноты</label>
+              <input id="new-notes-base" type="text" placeholder="Ваниль, Бобы тонка" class="w-full px-2 py-1.5 rounded-lg liquid-glass border border-white/10 text-white placeholder-slate-500 text-[11px]">
+            </div>
+          </div>
+
+          <!-- Photo Selection (File Upload / Presets / URL) -->
+          <div class="p-3 rounded-2xl liquid-glass border border-white/10 space-y-2">
+            <label class="block text-[11px] font-semibold text-slate-300">Фотография аромата</label>
+            <div class="flex items-center space-x-3">
+              <!-- Photo Preview -->
+              <div class="w-14 h-14 rounded-xl overflow-hidden border border-white/20 bg-black/40 shrink-0 flex items-center justify-center">
+                <img id="new-photo-preview" src="https://images.unsplash.com/photo-1592945403244-b3fbafd7f539?w=300&q=80" alt="Preview" class="w-full h-full object-cover">
+              </div>
+              <div class="flex-1 space-y-1.5">
+                <!-- File input -->
+                <input id="new-photo-file" type="file" accept="image/*" class="text-[10px] text-slate-400 file:mr-2 file:py-1 file:px-2.5 file:rounded-lg file:border-0 file:text-[10px] file:bg-white/10 file:text-white hover:file:bg-white/20" onchange="handleAdminPhotoUpload(event)">
+                <input id="new-photo-url" type="text" placeholder="или вставьте прямую ссылку на фото..." class="w-full px-2.5 py-1 text-[11px] rounded-lg liquid-glass border border-white/10 text-white placeholder-slate-500" oninput="updateAdminPhotoPreview(this.value)">
+              </div>
+            </div>
+
+            <!-- Ready Luxury Presets -->
+            <div class="pt-1 flex items-center space-x-2">
+              <span class="text-[10px] text-slate-400">Быстрые пресеты фото:</span>
+              <button type="button" onclick="setPresetPhoto('amber')" class="px-2 py-0.5 rounded bg-amber-500/20 text-amber-300 text-[10px] border border-amber-500/30">Янтарь / Золото</button>
+              <button type="button" onclick="setPresetPhoto('obsidian')" class="px-2 py-0.5 rounded bg-slate-700/40 text-slate-300 text-[10px] border border-slate-600">Черный флакон</button>
+              <button type="button" onclick="setPresetPhoto('emerald')" class="px-2 py-0.5 rounded bg-emerald-500/20 text-emerald-300 text-[10px] border border-emerald-500/30">Свежий / Кристалл</button>
+            </div>
+          </div>
+
+          <!-- PRICES FOR ALL 5 VOLUME TIERS (10, 20, 30, 50, 100 ML) -->
+          <div class="p-3 rounded-2xl liquid-glass border border-white/10 space-y-2">
+            <div class="flex items-center justify-between">
+              <label class="block text-[11px] font-semibold text-gold-400 uppercase tracking-wider">Цены на все виды объёма (₽)</label>
+              <span class="text-[10px] text-slate-400">Обязательно к заполнению</span>
+            </div>
+
+            <div class="grid grid-cols-5 gap-1.5 text-center">
+              <div>
+                <label class="block text-[10px] text-slate-300 font-medium mb-1">10 мл</label>
+                <input id="price-10" type="number" required placeholder="3500" class="w-full text-center py-1.5 px-1 rounded-xl liquid-glass border border-white/15 text-white font-bold text-xs focus:outline-none focus:border-gold-500">
+              </div>
+              <div>
+                <label class="block text-[10px] text-slate-300 font-medium mb-1">20 мл</label>
+                <input id="price-20" type="number" required placeholder="6500" class="w-full text-center py-1.5 px-1 rounded-xl liquid-glass border border-white/15 text-white font-bold text-xs focus:outline-none focus:border-gold-500">
+              </div>
+              <div>
+                <label class="block text-[10px] text-slate-300 font-medium mb-1">30 мл</label>
+                <input id="price-30" type="number" required placeholder="9200" class="w-full text-center py-1.5 px-1 rounded-xl liquid-glass border border-white/15 text-white font-bold text-xs focus:outline-none focus:border-gold-500">
+              </div>
+              <div>
+                <label class="block text-[10px] text-slate-300 font-medium mb-1">50 мл</label>
+                <input id="price-50" type="number" required placeholder="14500" class="w-full text-center py-1.5 px-1 rounded-xl liquid-glass border border-white/15 text-white font-bold text-xs focus:outline-none focus:border-gold-500">
+              </div>
+              <div>
+                <label class="block text-[10px] text-gold-400 font-medium mb-1">Флакон 100мл</label>
+                <input id="price-100" type="number" required placeholder="32000" class="w-full text-center py-1.5 px-1 rounded-xl liquid-glass border border-gold-500/40 text-gold-400 font-bold text-xs focus:outline-none focus:border-gold-500">
+              </div>
+            </div>
+          </div>
+
+          <!-- Save Button -->
+          <button type="submit" class="liquid-btn w-full py-3 px-4 rounded-2xl bg-gradient-to-r from-amber-500 to-amber-600 text-black font-bold text-sm tracking-wide shadow-xl flex items-center justify-center space-x-2">
+            <svg class="w-4 h-4" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4"/></svg>
+            <span>Опубликовать аромат в бутик</span>
+          </button>
+        </form>
+      </div>
+
+      <!-- TAB 2: MANAGE CATALOG ITEMS -->
+      <div id="tab-admin-catalog" class="admin-tab-content hidden space-y-3">
+        <div class="flex items-center justify-between">
+          <p class="text-xs text-slate-400">Список всех активных ароматов в каталоге:</p>
+          <button onclick="resetToDefaultData()" class="text-[10px] text-slate-500 hover:text-amber-400">Сброс к демо-данным</button>
+        </div>
+        <div id="admin-items-list" class="space-y-2">
+          <!-- Populated dynamically via JS -->
+        </div>
+      </div>
+
+      <!-- TAB 3: ADMIN ORDERS LIST -->
+      <div id="tab-admin-orders" class="admin-tab-content hidden space-y-3">
+        <p class="text-xs text-slate-400">Поступившие заказы от клиентов:</p>
+        <div id="admin-orders-list" class="space-y-2">
+          <!-- Populated dynamically via JS -->
+        </div>
+      </div>
+    </section>
+
+  </main>
+
+  <!-- ============================================== -->
+  <!-- BOTTOM NAVIGATION DOCK (LIQUID GLASS DOCK)      -->
+  <!-- ============================================== -->
+  <nav class="fixed bottom-3 inset-x-0 z-40 max-w-md mx-auto px-4">
+    <div class="liquid-specular rounded-3xl p-1.5 flex items-center justify-around border border-white/20 shadow-2xl">
+      <!-- Tab 1: Catalog -->
+      <button class="nav-tab active flex-1 flex flex-col items-center justify-center py-1.5 rounded-2xl transition-all text-gold-400" data-page="catalog" onclick="navigateTo('catalog')">
+        <svg class="w-5 h-5 mb-0.5" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M4 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2V6zM14 6a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2V6zM4 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2H6a2 2 0 01-2-2v-2zM14 16a2 2 0 012-2h2a2 2 0 012 2v2a2 2 0 01-2 2h-2a2 2 0 01-2-2v-2z"/></svg>
+        <span class="text-[10px] font-medium tracking-wider">Каталог</span>
+      </button>
+
+      <!-- Tab 2: Cart -->
+      <button class="nav-tab relative flex-1 flex flex-col items-center justify-center py-1.5 rounded-2xl transition-all text-slate-400 hover:text-white" data-page="cart" onclick="navigateTo('cart')">
+        <div class="relative">
+          <svg class="w-5 h-5 mb-0.5" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M16 11V7a4 4 0 00-8 0v4M5 9h14l1 12H4L5 9z"/></svg>
+          <span id="nav-cart-badge" class="hidden absolute -top-1 -right-2 w-4 h-4 rounded-full bg-gradient-to-r from-amber-500 to-amber-600 text-black text-[9px] font-bold flex items-center justify-center">0</span>
+        </div>
+        <span class="text-[10px] font-medium tracking-wider">Корзина</span>
+      </button>
+
+      <!-- Tab 3: My Orders -->
+      <button class="nav-tab flex-1 flex flex-col items-center justify-center py-1.5 rounded-2xl transition-all text-slate-400 hover:text-white" data-page="orders" onclick="navigateTo('orders')">
+        <svg class="w-5 h-5 mb-0.5" fill="none" stroke="currentColor" stroke-width="1.8" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M9 5H7a2 2 0 00-2 2v12a2 2 0 002 2h10a2 2 0 002-2V7a2 2 0 00-2-2h-2M9 5a2 2 0 002 2h2a2 2 0 002-2M9 5a2 2 0 012-2h2a2 2 0 012 2m-6 9l2 2 4-4"/></svg>
+        <span class="text-[10px] font-medium tracking-wider">Заказы</span>
+      </button>
+
+      <!-- Tab 4: Admin (Dynamic or Login trigger) -->
+      <button id="nav-admin-tab" class="nav-tab hidden flex-1 flex flex-col items-center justify-center py-1.5 rounded-2xl transition-all text-amber-400" data-page="admin" onclick="navigateTo('admin')">
+        <svg class="w-5 h-5 mb-0.5" fill="currentColor" viewBox="0 0 20 20"><path d="M10 2a4 4 0 00-4 4v1H5a2 2 0 00-2 2v7a2 2 0 002 2h10a2 2 0 002-2v-7a2 2 0 00-2-2h-1V6a4 4 0 00-4-4zm2 5V6a2 2 0 10-4 0v1h4z"/></svg>
+        <span class="text-[10px] font-medium tracking-wider">Админка</span>
+      </button>
+    </div>
+  </nav>
+
+  <!-- ============================================== -->
+  <!-- HIDDEN ADMIN LOGIN MODAL                       -->
+  <!-- ============================================== -->
+  <div id="admin-login-modal" class="hidden fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-md">
+    <div class="liquid-specular w-full max-w-sm rounded-3xl p-5 border border-white/20 space-y-4 shadow-2xl">
+      <div class="flex items-center justify-between border-b border-white/10 pb-2.5">
+        <div class="flex items-center space-x-2">
+          <div class="w-7 h-7 rounded-lg bg-amber-500/20 border border-amber-500/40 flex items-center justify-center text-amber-400">
+            <svg class="w-4 h-4" fill="currentColor" viewBox="0 0 20 20"><path fill-rule="evenodd" d="M5 9V7a5 5 0 0110 0v2a2 2 0 012 2v5a2 2 0 01-2 2H5a2 2 0 01-2-2v-5a2 2 0 012-2zm8-2v2H7V7a3 3 0 016 0z" clip-rule="evenodd"/></svg>
+          </div>
+          <div>
+            <h3 class="text-sm font-serif font-medium text-white">Вход для администратора</h3>
+            <p class="text-[10px] text-slate-400">Управление ароматами и ценами</p>
+          </div>
+        </div>
+        <button onclick="closeAdminLoginModal()" class="text-slate-400 hover:text-white p-1">
+          <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M6 18L18 6M6 6l12 12"/></svg>
+        </button>
+      </div>
+
+      <form id="admin-login-form" autocomplete="off" onsubmit="event.preventDefault(); handleAdminAuth();" class="space-y-3 text-xs">
+        <div>
+          <label class="block text-[11px] text-slate-300 mb-1">Логин</label>
+          <input id="admin-username" type="text" value="" required placeholder="Введите логин" autocomplete="off" class="w-full px-3 py-2 rounded-xl liquid-glass border border-white/15 text-white focus:outline-none focus:border-gold-500 placeholder-slate-500">
+        </div>
+        <div>
+          <label class="block text-[11px] text-slate-300 mb-1">Пароль</label>
+          <input id="admin-password" type="password" value="" required placeholder="Введите пароль" autocomplete="new-password" class="w-full px-3 py-2 rounded-xl liquid-glass border border-white/15 text-white focus:outline-none focus:border-gold-500 placeholder-slate-500">
+        </div>
+
+        <div id="admin-login-error" class="hidden text-rose-400 text-[11px] bg-rose-500/10 p-2 rounded-lg border border-rose-500/20">
+          Неверный логин или пароль
+        </div>
+
+        <div class="pt-1 flex space-x-2">
+          <button type="button" onclick="closeAdminLoginModal()" class="flex-1 py-2 rounded-xl bg-white/10 text-slate-300 text-xs font-medium">Отмена</button>
+          <button type="submit" class="flex-1 py-2 rounded-xl bg-gradient-to-r from-amber-500 to-amber-600 text-black text-xs font-bold">Войти</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- ============================================== -->
+  <!-- ORDER SUCCESS CONFIRMATION MODAL               -->
+  <!-- ============================================== -->
+  <div id="order-success-modal" class="hidden fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/80 backdrop-blur-md">
+    <div class="liquid-specular w-full max-w-sm rounded-3xl p-5 border border-white/20 text-center space-y-3.5 shadow-2xl">
+      <div class="w-14 h-14 mx-auto rounded-full bg-emerald-500/20 border border-emerald-500/40 flex items-center justify-center text-emerald-400">
+        <svg class="w-7 h-7" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M5 13l4 4L19 7"/></svg>
+      </div>
+      <div>
+        <h3 class="text-lg font-serif font-medium text-white">Заказ успешно принят!</h3>
+        <p id="success-order-num" class="text-xs text-gold-400 font-medium">Номер заказа #AP-2026</p>
+      </div>
+      <p class="text-xs text-slate-300 leading-relaxed">
+        Благодарим за выбор <strong class="text-white">AURA PRIVÉE</strong>. Наш менеджер уже готовит отправку и свяжется с вами в Telegram для подтверждения трек-номера.
+      </p>
+      <div class="pt-2">
+        <button onclick="closeSuccessModal()" class="liquid-btn w-full py-2.5 rounded-2xl bg-gradient-to-r from-amber-500 to-amber-600 text-black font-semibold text-xs tracking-wide">
+          Вернуться в бутик
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- TOAST NOTIFICATION CONTAINER -->
+  <div id="toast" class="fixed top-16 inset-x-0 mx-auto max-w-xs z-50 pointer-events-none transition-all duration-300 opacity-0 transform -translate-y-2 flex justify-center">
+    <div class="liquid-specular px-4 py-2 rounded-2xl border border-white/25 text-xs text-white shadow-xl flex items-center space-x-2">
+      <span id="toast-icon">✨</span>
+      <span id="toast-message">Успешно</span>
+    </div>
+  </div>
+
+  <!-- ============================================== -->
+  <!-- JAVASCRIPT APPLICATION LOGIC                   -->
+  <!-- ============================================== -->
+  <script>
+    // Safe storage wrapper
+    const storage = {
+      get: (k, def) => {
+        try {
+          const v = localStorage.getItem(k);
+          return v ? JSON.parse(v) : def;
+        } catch(e) {
+          return def;
+        }
+      },
+      set: (k, v) => {
+        try {
+          localStorage.setItem(k, JSON.stringify(v));
+        } catch(e) {}
+      }
+    };
+
+    // Images presets (clean high-res imagery)
+    const PRESETS = {
+      amber: "https://images.unsplash.com/photo-1592945403244-b3fbafd7f539?w=600&q=80",
+      obsidian: "https://images.unsplash.com/photo-1547887537-6158d64c35b3?w=600&q=80",
+      emerald: "https://images.unsplash.com/photo-1523293182086-7651a899d37f?w=600&q=80"
+    };
+
+    // Authentic Initial Perfume Catalog with 5 volume tiers
+    const DEFAULT_PERFUMES = [
+      {
+        id: "ap-01",
+        title: "Baccarat Rouge 540 Extrait",
+        brand: "Maison Francis Kurkdjian",
+        category: "Восточные",
+        concentration: "Extrait de Parfum",
+        badge: "Хит",
+        desc: "Легендарный восточно-цветочный шедевр. Сияющий шафран, горький миндаль и чувственный серая амбра создают бесконечный магнетический шлейф чистой роскоши.",
+        notesTop: "Горький миндаль, Шафран",
+        notesHeart: "Египетский жасмин Грандифлорум, Белый кедр",
+        notesBase: "Серая амбра, Древесный мускус",
+        photo: "https://images.unsplash.com/photo-1592945403244-b3fbafd7f539?w=600&q=80",
+        prices: { "10": 4200, "20": 7900, "30": 11500, "50": 18200, "100": 44000 }
+      },
+      {
+        id: "ap-02",
+        title: "Lost Cherry",
+        brand: "Tom Ford",
+        category: "Люкс",
+        concentration: "Eau de Parfum",
+        badge: "Бестселлер",
+        desc: "Соблазнительное и дерзкое путешествие в запретное. Сочная спелая черная вишня, утопающая в вишневом ликере с дразнящим аккордом горького миндаля.",
+        notesTop: "Черная вишня, Ликёр, Горький миндаль",
+        notesHeart: "Вишня гриот, Турецкая роза, Жасмин самбак",
+        notesBase: "Перуанский бальзам, Бобы тонка, Сандал, Ветивер",
+        photo: "https://images.unsplash.com/photo-1547887537-6158d64c35b3?w=600&q=80",
+        prices: { "10": 3900, "20": 7400, "30": 10800, "50": 16900, "100": 38500 }
+      },
+      {
+        id: "ap-03",
+        title: "Angels' Share",
+        brand: "Kilian Paris",
+        category: "Восточные",
+        concentration: "Eau de Parfum",
+        badge: "Эксклюзив",
+        desc: "Гурманский коньячный эликсир от наследника знаменитой династии. Эссенция выдержанного коньяка, теплая корица, абсолю дуба и сладостная пралине.",
+        notesTop: "Коньяк Hennessy, Корица",
+        notesHeart: "Бобы тонка, Абсолют дуба, Лесной орех",
+        notesBase: "Пралине, Мадагаскарская ваниль, Сандал",
+        photo: "https://images.unsplash.com/photo-1523293182086-7651a899d37f?w=600&q=80",
+        prices: { "10": 3600, "20": 6800, "30": 9800, "50": 15500, "100": 34000 }
+      },
+      {
+        id: "ap-04",
+        title: "Aventus",
+        brand: "Creed",
+        category: "Ниша",
+        concentration: "Millésime",
+        badge: "Хит",
+        desc: "Аромат триумфаторов и монархов. Искристый ананас, сочное яблоко и бергамот переходят в благородную березовую дымность, мох и королевскую амбру.",
+        notesTop: "Ананас, Черная смородина, Бергамот, Яблоко",
+        notesHeart: "Береза, Пачули, Марокканский жасмин, Роза",
+        notesBase: "Мускус, Дубовый мох, Серая амбра, Ваниль",
+        photo: "https://images.unsplash.com/photo-1594035910387-fea47794261f?w=600&q=80",
+        prices: { "10": 3800, "20": 7200, "30": 10500, "50": 16500, "100": 39000 }
+      },
+      {
+        id: "ap-05",
+        title: "Ganymede",
+        brand: "Marc-Antoine Barrois",
+        category: "Ниша",
+        concentration: "Eau de Parfum",
+        badge: "Новинка",
+        desc: "Космическая минеральная поэзия будущего от Квентина Биша. Ноты безупречной замши, бессмертника, мандарина и уникального минерала акигалавуд.",
+        notesTop: "Итальянский мандарин, Шафран",
+        notesHeart: "Фиалка, Китайский османтус",
+        notesBase: "Акигалавуд, Абсолют бессмертника, Минералы",
+        photo: "https://images.unsplash.com/photo-1588405748880-12d1d2a59f75?w=600&q=80",
+        prices: { "10": 2900, "20": 5500, "30": 7900, "50": 12500, "100": 26000 }
+      },
+      {
+        id: "ap-06",
+        title: "Silver Mountain Water",
+        brand: "Creed",
+        category: "Свежие",
+        concentration: "Millésime",
+        badge: "Бестселлер",
+        desc: "Хрустальная свежесть швейцарских ледников и альпийских ручьев. Зеленый чай, черный смородиновый лист, гальбанум и морозный мускус.",
+        notesTop: "Бергамот, Мандарин, Нероли",
+        notesHeart: "Зеленый чай, Почки черной смородины",
+        notesBase: "Мускус, Сандал, Петитгрейн, Гальбанум",
+        photo: "https://images.unsplash.com/photo-1592945403244-b3fbafd7f539?w=600&q=80",
+        prices: { "10": 3400, "20": 6400, "30": 9200, "50": 14500, "100": 33000 }
+      }
+    ];
+
+    // State Variables
+    let perfumes = storage.get("aura_perfumes", DEFAULT_PERFUMES);
+    let cart = storage.get("aura_cart", []);
+    let ordersHistory = storage.get("aura_orders_history", []);
+    let adminOrders = storage.get("aura_admin_orders", []);
+    let currentCategory = "all";
+    let searchQuery = "";
+    let selectedPerfume = null;
+    let selectedVolume = "10";
+    let detailQty = 1;
+    let brandClickCount = 0;
+    let brandClickTimer = null;
+    let isAdminLoggedIn = storage.get("aura_admin_logged_in", false);
+
+    // Initializing Telegram WebApp if present
+    const tg = window.Telegram && window.Telegram.WebApp ? window.Telegram.WebApp : null;
+    if (tg) {
+      try {
+        tg.ready();
+        tg.expand();
+      } catch(e) {}
+    }
+
+    // App Initialization
+    window.addEventListener("DOMContentLoaded", () => {
+      syncAdminUI();
+      renderCatalog();
+      renderCart();
+      renderOrdersHistory();
+      renderAdminCatalog();
+      renderAdminOrders();
+    });
+
+    // Navigation System
+    function navigateTo(pageId) {
+      if (pageId === 'admin' && !isAdminLoggedIn) {
+        promptAdminLogin();
+        return;
+      }
+
+      // Hide all views
+      document.querySelectorAll(".page-view").forEach(el => {
+        el.classList.add("hidden");
+      });
+
+      // Show selected view
+      const targetView = document.getElementById(`view-${pageId}`);
+      if (targetView) {
+        targetView.classList.remove("hidden");
+        window.scrollTo({ top: 0, behavior: 'smooth' });
+      }
+
+      // Update bottom nav bar active states
+      document.querySelectorAll(".nav-tab").forEach(tab => {
+        if (tab.getAttribute("data-page") === pageId) {
+          tab.classList.add("text-gold-400", "active");
+          tab.classList.remove("text-slate-400");
+        } else {
+          tab.classList.remove("text-gold-400", "active");
+          tab.classList.add("text-slate-400");
+        }
+      });
+    }
+
+    // Toast Utility
+    let toastTimeout = null;
+    function showToast(message, icon = "✨") {
+      const toast = document.getElementById("toast");
+      const iconEl = document.getElementById("toast-icon");
+      const msgEl = document.getElementById("toast-message");
+      if (!toast) return;
+
+      iconEl.textContent = icon;
+      msgEl.textContent = message;
+
+      toast.classList.remove("opacity-0", "-translate-y-2");
+      toast.classList.add("opacity-100", "translate-y-0");
+
+      if (toastTimeout) clearTimeout(toastTimeout);
+      toastTimeout = setTimeout(() => {
+        toast.classList.remove("opacity-100", "translate-y-0");
+        toast.classList.add("opacity-0", "-translate-y-2");
+      }, 2400);
+    }
+
+    // Search and Filtering
+    function handleSearch(val) {
+      searchQuery = val.trim().toLowerCase();
+      const clearBtn = document.getElementById("clear-search-btn");
+      if (clearBtn) {
+        if (searchQuery.length > 0) {
+          clearBtn.classList.remove("hidden");
+        } else {
+          clearBtn.classList.add("hidden");
+        }
+      }
+      renderCatalog();
+    }
+
+    function clearSearch() {
+      const input = document.getElementById("search-input");
+      if (input) input.value = "";
+      searchQuery = "";
+      const clearBtn = document.getElementById("clear-search-btn");
+      if (clearBtn) clearBtn.classList.add("hidden");
+      renderCatalog();
+    }
+
+    function filterCategory(cat, btnEl) {
+      currentCategory = cat;
+      document.querySelectorAll(".cat-pill").forEach(btn => {
+        btn.classList.remove("border-gold-500/40", "text-gold-400", "active");
+        btn.classList.add("border-white/10", "text-slate-300");
+      });
+      if (btnEl) {
+        btnEl.classList.remove("border-white/10", "text-slate-300");
+        btnEl.classList.add("border-gold-500/40", "text-gold-400", "active");
+      }
+      renderCatalog();
+    }
+
+    // Render Perfumes Grid
+    function renderCatalog() {
+      const grid = document.getElementById("perfume-grid");
+      const emptyEl = document.getElementById("catalog-empty");
+      if (!grid) return;
+
+      const filtered = perfumes.filter(p => {
+        const matchesCategory = (currentCategory === "all") || (p.category === currentCategory);
+        const matchesSearch = !searchQuery || 
+          p.title.toLowerCase().includes(searchQuery) ||
+          p.brand.toLowerCase().includes(searchQuery) ||
+          (p.notesTop && p.notesTop.toLowerCase().includes(searchQuery)) ||
+          (p.notesHeart && p.notesHeart.toLowerCase().includes(searchQuery)) ||
+          (p.notesBase && p.notesBase.toLowerCase().includes(searchQuery));
+        return matchesCategory && matchesSearch;
+      });
+
+      if (filtered.length === 0) {
+        grid.innerHTML = "";
+        if (emptyEl) emptyEl.classList.remove("hidden");
+        return;
+      }
+
+      if (emptyEl) emptyEl.classList.add("hidden");
+
+      grid.innerHTML = filtered.map(item => {
+        const startPrice = item.prices["10"] || 2500;
+        return `
+          <div onclick="openProductDetails('${item.id}')" class="liquid-specular rounded-3xl p-3 border border-white/15 flex flex-col justify-between cursor-pointer active:scale-95 transition-all group">
+            <div class="relative w-full aspect-square rounded-2xl overflow-hidden bg-black/40 border border-white/10 mb-2.5">
+              <img src="${item.photo}" alt="${item.title}" class="w-full h-full object-cover transition-transform duration-500 group-hover:scale-105">
+              <div class="absolute inset-0 bg-gradient-to-t from-black/70 via-transparent to-transparent pointer-events-none"></div>
+              <span class="absolute top-2 left-2 text-[9px] uppercase font-semibold px-2 py-0.5 rounded-full bg-gold-500/80 text-black shadow-md">${item.badge || 'Niche'}</span>
+              <span class="absolute bottom-2 left-2 text-[9px] text-slate-300 px-1.5 py-0.5 rounded-md bg-black/60 backdrop-blur-md">от 10 мл</span>
+            </div>
+
+            <div class="space-y-1">
+              <p class="text-[10px] uppercase tracking-wider text-slate-400 truncate">${item.brand}</p>
+              <h3 class="text-xs font-serif font-medium text-white truncate">${item.title}</h3>
+              <p class="text-[10px] text-slate-400 line-clamp-1">${item.notesTop || item.category}</p>
+            </div>
+
+            <div class="pt-2.5 mt-1 border-t border-white/10 flex items-center justify-between">
+              <div>
+                <span class="text-[9px] text-slate-400 block leading-none">распив от</span>
+                <span class="text-xs font-serif font-bold text-gold-400">${startPrice.toLocaleString()} ₽</span>
+              </div>
+              <div class="w-7 h-7 rounded-xl bg-gold-500/20 text-gold-400 border border-gold-500/30 flex items-center justify-center group-hover:bg-gold-500 group-hover:text-black transition-colors">
+                <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" stroke-width="2.2" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" d="M12 4v16m8-8H4"/></svg>
+              </div>
+            </div>
+          </div>
+        `;
+      }).join("");
+    }
+
+    // Product Details View Logic
+    function openProductDetails(id) {
+      const perfume = perfumes.find(p => p.id === id);
+      if (!perfume) return;
+
+      selectedPerfume = perfume;
+      selectedVolume = "10";
+      detailQty = 1;
+
+      document.getElementById("detail-brand-badge").textContent = perfume.brand;
+      document.getElementById("detail-img").src = perfume.photo;
+      document.getElementById("detail-badge").textContent = perfume.badge || "Эксклюзив";
+      document.getElementById("detail-concentration").textContent = perfume.concentration || "Extrait de Parfum";
+      document.getElementById("detail-brand").textContent = perfume.brand;
+      document.getElementById("detail-title").textContent = perfume.title;
+      document.getElementById("detail-desc").textContent = perfume.desc || "Изысканный селективный аромат с богатым ольфакторным профилем.";
+
+      document.getElementById("detail-notes-top").textContent = perfume.notesTop || "Не указаны";
+      document.getElementById("detail-notes-heart").textContent = perfume.notesHeart || "Не указаны";
+      document.getElementById("detail-notes-base").textContent = perfume.notesBase || "Не указаны";
+
+      document.getElementById("detail-qty").textContent = detailQty;
+
+      updateVolumeUI();
+      updateDetailPriceDisplay();
+      navigateTo("details");
+    }
+
+    function selectVolume(vol) {
+      selectedVolume = vol;
+      updateVolumeUI();
+      updateDetailPriceDisplay();
+    }
+
+    function updateVolumeUI() {
+      document.querySelectorAll(".volume-btn").forEach(btn => {
+        const v = btn.getAttribute("data-vol");
+        if (v === selectedVolume) {
+          btn.classList.add("border-gold-500/50", "text-gold-400", "active");
+          btn.classList.remove("border-white/10", "text-slate-400");
+        } else {
+          btn.classList.remove("border-gold-500/50", "text-gold-400", "active");
+          btn.classList.add("border-white/10", "text-slate-400");
+        }
+      });
+
+      const hintEl = document.getElementById("volume-type-hint");
+      const packText = document.getElementById("volume-packaging-text");
+      if (selectedVolume === "100") {
+        if (hintEl) hintEl.textContent = "Оригинальный запечатанный флакон";
+        if (packText) packText.textContent = "Новый оригинальный запечатанный флакон в заводской слюде с фирменным батч-кодом.";
+      } else {
+        if (hintEl) hintEl.textContent = `Стеклянный атомайзер ${selectedVolume} мл`;
+        if (packText) packText.textContent = `Премиальный стеклянный атомайзер ${selectedVolume} мл с металлическим микроспреем без протеканий.`;
+      }
+    }
+
+    function updateDetailPriceDisplay() {
+      if (!selectedPerfume) return;
+      const unitPrice = selectedPerfume.prices[selectedVolume] || 0;
+      const totalPrice = unitPrice * detailQty;
+      const priceDisp = document.getElementById("detail-price-display");
+      const ctaText = document.getElementById("cta-add-text");
+
+      if (priceDisp) priceDisp.textContent = unitPrice.toLocaleString();
+      if (ctaText) ctaText.textContent = `В корзину • ${totalPrice.toLocaleString()} ₽`;
+    }
+
+    function changeDetailQty(delta) {
+      detailQty += delta;
+      if (detailQty < 1) detailQty = 1;
+      if (detailQty > 99) detailQty = 99;
+      document.getElementById("detail-qty").textContent = detailQty;
+      updateDetailPriceDisplay();
+    }
+
+    function addCurrentToCart() {
+      if (!selectedPerfume) return;
+
+      const unitPrice = selectedPerfume.prices[selectedVolume] || 0;
+      const existingIndex = cart.findIndex(i => i.id === selectedPerfume.id && i.volume === selectedVolume);
+
+      if (existingIndex > -1) {
+        cart[existingIndex].qty += detailQty;
+      } else {
+        cart.push({
+          id: selectedPerfume.id,
+          title: selectedPerfume.title,
+          brand: selectedPerfume.brand,
+          volume: selectedVolume,
+          unitPrice: unitPrice,
+          qty: detailQty,
+          photo: selectedPerfume.photo,
+          isBottle: selectedVolume === "100"
+        });
+      }
+
+      storage.set("aura_cart", cart);
+      renderCart();
+      showToast(`Добавлено в корзину (${selectedVolume} мл)`, "🛍️");
+    }
+
+    // Cart and Checkout Logic
+    function renderCart() {
+      const container = document.getElementById("cart-items-container");
+      const emptyEl = document.getElementById("cart-empty");
+      const checkoutSec = document.getElementById("checkout-section");
+      const headerCount = document.getElementById("header-cart-count");
+      const navBadge = document.getElementById("nav-cart-badge");
+      const totalQtyEl = document.getElementById("cart-total-qty");
+      const grandTotalEl = document.getElementById("cart-grand-total");
+
+      const totalItems = cart.reduce((acc, i) => acc + i.qty, 0);
+      const grandTotal = cart.reduce((acc, i) => acc + (i.unitPrice * i.qty), 0);
+
+      // Header & Bottom dock badge update
+      if (totalItems > 0) {
+        if (headerCount) {
+          headerCount.textContent = totalItems;
+          headerCount.classList.remove("hidden");
+          headerCount.classList.add("flex");
+        }
+        if (navBadge) {
+          navBadge.textContent = totalItems;
+          navBadge.classList.remove("hidden");
+        }
+      } else {
+        if (headerCount) {
+          headerCount.classList.add("hidden");
+          headerCount.classList.remove("flex");
+        }
+        if (navBadge) navBadge.classList.add("hidden");
+      }
+
+      if (cart.length === 0) {
+        if (container) container.innerHTML = "";
+        if (emptyEl) emptyEl.classList.remove("hidden");
+        if (checkoutSec) checkoutSec.classList.add("hidden");
+        return;
+      }
+
+      if (emptyEl) emptyEl.classList.add("hidden");
+      if (checkoutSec) checkoutSec.classList.remove("hidden");
+
+      if (totalQtyEl) totalQtyEl.textContent = `${totalItems} шт.`;
+      if (grandTotalEl) grandTotalEl.textContent = `${grandTotal.toLocaleString()} ₽`;
+
+      if (container) {
+        container.innerHTML = cart.map((item, idx) => `
+          <div class="liquid-specular rounded-2xl p-3 border border-white/15 flex items-center justify-between space-x-3">
+            <div class="w-12 h-12 rounded-xl overflow-hidden bg-black/40 border border-white/10 shrink-0">
+              <img src="${item.photo}" alt="${item.title}" class="w-full h-full object-cover">
+            </div>
+
+            <div class="flex-1 min-w-0">
+              <div class="flex items-center space-x-1.5">
+                <span class="text-[10px] text-slate-400 uppercase truncate">${item.brand}</span>
+                <span class="text-[9px] px-1.5 py-0.2 rounded bg-gold-500/20 text-gold-400 font-semibold">${item.volume === "100" ? "Флакон 100мл" : item.volume + " мл"}</span>
+              </div>
+              <h4 class="text-xs font-serif font-medium text-white truncate">${item.title}</h4>
+              <p class="text-xs font-bold text-gold-400">${(item.unitPrice * item.qty).toLocaleString()} ₽ <span class="text-[9px] font-normal text-slate-400">(${item.unitPrice.toLocaleString()} ₽/шт)</span></p>
+            </div>
+
+            <div class="flex items-center space-x-1.5 liquid-glass rounded-xl p-1 border border-white/10">
+              <button onclick="updateCartItemQty(${idx}, -1)" class="w-6 h-6 rounded-lg bg-white/10 text-white font-bold text-xs flex items-center justify-center hover:bg-white/20">-</button>
+              <span class="w-5 text-center text-xs font-semibold text-white">${item.qty}</span>
+              <button onclick="updateCartItemQty(${idx}, 1)" class="w-6 h-6 rounded-lg bg-white/10 text-white font-bold text-xs flex items-center justify-center hover:bg-white/20">+</button>
+            </div>
+
+            <button onclick="removeCartItem(${idx})" class="text-slate-500 hover:text-rose-400 p-1">
+              <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg>
+            </button>
+          </div>
+        `).join("");
+      }
+    }
+
+    function updateCartItemQty(index, delta) {
+      if (!cart[index]) return;
+      cart[index].qty += delta;
+      if (cart[index].qty <= 0) {
+        cart.splice(index, 1);
+      }
+      storage.set("aura_cart", cart);
+      renderCart();
+    }
+
+    function removeCartItem(index) {
+      cart.splice(index, 1);
+      storage.set("aura_cart", cart);
+      renderCart();
+      showToast("Позиция удалена из корзины");
+    }
+
+    function clearCart() {
+      cart = [];
+      storage.set("aura_cart", cart);
+      renderCart();
+      showToast("Корзина очищена");
+    }
+
+    // Checkout Submission
+    function submitOrder() {
+      if (cart.length === 0) {
+        showToast("Корзина пуста", "⚠️");
+        return;
+      }
+
+      const name = document.getElementById("order-name").value.trim();
+      const phone = document.getElementById("order-phone").value.trim();
+      const address = document.getElementById("order-address").value.trim();
+      const delivery = document.getElementById("order-delivery-method").value;
+      const comment = document.getElementById("order-comment").value.trim();
+
+      if (!name || !phone || !address) {
+        showToast("Пожалуйста, заполните имя, телефон и адрес", "⚠️");
+        return;
+      }
+
+      const orderNumber = `AP-${Math.floor(1000 + Math.random() * 9000)}`;
+      const grandTotal = cart.reduce((acc, i) => acc + (i.unitPrice * i.qty), 0);
+      const orderDate = new Date().toLocaleString("ru-RU", { day: '2-digit', month: '2-digit', year: 'numeric', hour: '2-digit', minute: '2-digit' });
+
+      const newOrder = {
+        orderId: orderNumber,
+        date: orderDate,
+        customer: { name, phone, address, delivery, comment },
+        items: [...cart],
+        grandTotal: grandTotal,
+        status: "Новый заказ"
+      };
+
+      // Save to customer history
+      ordersHistory.unshift(newOrder);
+      storage.set("aura_orders_history", ordersHistory);
+
+      // Save to admin orders list
+      adminOrders.unshift(newOrder);
+      storage.set("aura_admin_orders", adminOrders);
+
+      // Telegram WebApp Integration
+      if (tg && typeof tg.sendData === "function") {
+        try {
+          tg.sendData(JSON.stringify(newOrder));
+        } catch(e) {}
+      }
+
+      // Reset cart and fields
+      cart = [];
+      storage.set("aura_cart", cart);
+      renderCart();
+      renderOrdersHistory();
+      renderAdminOrders();
+
+      document.getElementById("order-name").value = "";
+      document.getElementById("order-phone").value = "";
+      document.getElementById("order-address").value = "";
+      document.getElementById("order-comment").value = "";
+
+      // Open Success Modal
+      document.getElementById("success-order-num").textContent = `Номер заказа #${orderNumber}`;
+      document.getElementById("order-success-modal").classList.remove("hidden");
+    }
+
+    function closeSuccessModal() {
+      document.getElementById("order-success-modal").classList.add("hidden");
+      navigateTo("orders");
+    }
+
+    // Render Orders History
+    function renderOrdersHistory() {
+      const listEl = document.getElementById("orders-history-list");
+      if (!listEl) return;
+
+      if (ordersHistory.length === 0) {
+        listEl.innerHTML = `
+          <div class="liquid-glass rounded-2xl p-4 text-center text-xs text-slate-400 border border-white/10">
+            У вас пока нет оформленных заказов.
+          </div>
+        `;
+        return;
+      }
+
+      listEl.innerHTML = ordersHistory.map(ord => `
+        <div class="liquid-glass rounded-2xl p-3 border border-white/15 space-y-2 text-xs">
+          <div class="flex items-center justify-between border-b border-white/10 pb-1.5">
+            <span class="font-bold text-white font-serif">Заказ #${ord.orderId}</span>
+            <span class="px-2 py-0.5 rounded-full bg-amber-500/20 text-amber-300 text-[10px] border border-amber-500/30">${ord.status}</span>
+          </div>
+          <div class="text-[11px] text-slate-400 flex justify-between">
+            <span>${ord.date}</span>
+            <span>${ord.customer.delivery}</span>
+          </div>
+          <div class="space-y-1 pt-1">
+            ${ord.items.map(it => `
+              <div class="flex justify-between text-slate-300 text-[11px]">
+                <span class="truncate pr-2">${it.title} (${it.volume === "100" ? "Флакон 100мл" : it.volume + " мл"}) × ${it.qty}</span>
+                <span class="font-medium text-white">${(it.unitPrice * it.qty).toLocaleString()} ₽</span>
+              </div>
+            `).join("")}
+          </div>
+          <div class="pt-1.5 border-t border-white/10 flex justify-between font-bold text-gold-400">
+            <span>Итого:</span>
+            <span>${ord.grandTotal.toLocaleString()} ₽</span>
+          </div>
+        </div>
+      `).join("");
+    }
+
+    function openTelegramSupport() {
+      const url = "https://t.me/telegram";
+      if (tg && typeof tg.openTelegramLink === "function") {
+        tg.openTelegramLink(url);
+      } else {
+        window.open(url, "_blank");
+      }
+    }
+
+    // ==============================================
+    // ADMIN AUTHENTICATION & PANEL SYSTEM
+    // Credential requirements:
+    // Login: admin
+    // Password: perfyme2007 (also accepts perfume2007)
+    // ==============================================
+    function handleBrandClick() {
+      brandClickCount++;
+      if (brandClickTimer) clearTimeout(brandClickTimer);
+      brandClickTimer = setTimeout(() => { brandClickCount = 0; }, 1500);
+
+      if (brandClickCount >= 5) {
+        brandClickCount = 0;
+        showToast("Секретный вход в управление", "🔑");
+        promptAdminLogin();
+      }
+    }
+
+    function promptAdminLogin() {
+      if (isAdminLoggedIn) {
+        navigateTo("admin");
+        return;
+      }
+      const modal = document.getElementById("admin-login-modal");
+      const userIn = document.getElementById("admin-username");
+      const passIn = document.getElementById("admin-password");
+      const err = document.getElementById("admin-login-error");
+      
+      // Always ensure fields are clean when modal opens
+      if (userIn) userIn.value = "";
+      if (passIn) passIn.value = "";
+      if (err) err.classList.add("hidden");
+      if (modal) modal.classList.remove("hidden");
+    }
+
+    function closeAdminLoginModal() {
+      const modal = document.getElementById("admin-login-modal");
+      const userIn = document.getElementById("admin-username");
+      const passIn = document.getElementById("admin-password");
+      if (userIn) userIn.value = "";
+      if (passIn) passIn.value = "";
+      if (modal) modal.classList.add("hidden");
+    }
+
+    async function handleAdminAuth() {
+      const userInEl = document.getElementById("admin-username");
+      const passInEl = document.getElementById("admin-password");
+      const userIn = userInEl ? userInEl.value.trim() : "";
+      const passIn = passInEl ? passInEl.value.trim() : "";
+      const errorEl = document.getElementById("admin-login-error");
+
+      // Check credentials
+      const validPass = (passIn === "perfyme2007" || passIn === "perfume2007");
+
+      if (userIn === "admin" && validPass) {
+        isAdminLoggedIn = true;
+        storage.set("aura_admin_logged_in", true);
+        if (errorEl) errorEl.classList.add("hidden");
+        closeAdminLoginModal();
+        syncAdminUI();
+        showToast("Добро пожаловать в панель управления", "👑");
+        navigateTo("admin");
+      } else {
+        if (errorEl) {
+          errorEl.textContent = "Неверный логин или пароль";
+          errorEl.classList.remove("hidden");
+        }
+        if (passInEl) {
+          passInEl.value = "";
+          passInEl.focus();
+        }
+      }
+    }
+
+    function adminLogout() {
+      isAdminLoggedIn = false;
+      storage.set("aura_admin_logged_in", false);
+      syncAdminUI();
+      showToast("Сессия администратора завершена");
+      navigateTo("catalog");
+    }
+
+    function syncAdminUI() {
+      const headerBadge = document.getElementById("admin-header-badge");
+      const navAdminTab = document.getElementById("nav-admin-tab");
+
+      if (isAdminLoggedIn) {
+        if (headerBadge) {
+          headerBadge.classList.remove("hidden");
+          headerBadge.classList.add("flex");
+        }
+        if (navAdminTab) navAdminTab.classList.remove("hidden");
+      } else {
+        if (headerBadge) {
+          headerBadge.classList.add("hidden");
+          headerBadge.classList.remove("flex");
+        }
+        if (navAdminTab) navAdminTab.classList.add("hidden");
+      }
+    }
+
+    // Admin Panel Management
+    function switchAdminTab(tabName, btnEl) {
+      document.querySelectorAll(".admin-tab-content").forEach(c => c.classList.add("hidden"));
+      document.querySelectorAll(".admin-tab").forEach(b => {
+        b.classList.remove("bg-white/15", "text-white", "active");
+        b.classList.add("text-slate-400");
+      });
+
+      const target = document.getElementById(`tab-${tabName}`);
+      if (target) target.classList.remove("hidden");
+
+      if (btnEl) {
+        btnEl.classList.add("bg-white/15", "text-white", "active");
+        btnEl.classList.remove("text-slate-400");
+      }
+
+      if (tabName === "admin-catalog") renderAdminCatalog();
+      if (tabName === "admin-orders") renderAdminOrders();
+    }
+
+    function setPresetPhoto(type) {
+      if (PRESETS[type]) {
+        document.getElementById("new-photo-preview").src = PRESETS[type];
+        document.getElementById("new-photo-url").value = PRESETS[type];
+      }
+    }
+
+    function updateAdminPhotoPreview(val) {
+      if (val && val.trim().length > 5) {
+        document.getElementById("new-photo-preview").src = val.trim();
+      }
+    }
+
+    function handleAdminPhotoUpload(event) {
+      const file = event.target.files && event.target.files[0];
+      if (!file) return;
+
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        const dataUrl = e.target.result;
+        document.getElementById("new-photo-preview").src = dataUrl;
+        document.getElementById("new-photo-url").value = dataUrl;
+      };
+      reader.readAsDataURL(file);
+    }
+
+    function saveNewFragrance() {
+      const title = document.getElementById("new-title").value.trim();
+      const brand = document.getElementById("new-brand").value.trim();
+      const category = document.getElementById("new-category").value;
+      const concentration = document.getElementById("new-concentration").value.trim() || "Extrait de Parfum";
+      const badge = document.getElementById("new-badge").value;
+      const desc = document.getElementById("new-desc").value.trim();
+      const notesTop = document.getElementById("new-notes-top").value.trim();
+      const notesHeart = document.getElementById("new-notes-heart").value.trim();
+      const notesBase = document.getElementById("new-notes-base").value.trim();
+      const photo = document.getElementById("new-photo-url").value.trim() || document.getElementById("new-photo-preview").src;
+
+      const p10 = parseInt(document.getElementById("price-10").value) || 3000;
+      const p20 = parseInt(document.getElementById("price-20").value) || 5800;
+      const p30 = parseInt(document.getElementById("price-30").value) || 8500;
+      const p50 = parseInt(document.getElementById("price-50").value) || 13500;
+      const p100 = parseInt(document.getElementById("price-100").value) || 28000;
+
+      if (!title || !brand) {
+        showToast("Укажите название и бренд аромата", "⚠️");
+        return;
+      }
+
+      const newFrag = {
+        id: `ap-${Date.now()}`,
+        title,
+        brand,
+        category,
+        concentration,
+        badge,
+        desc,
+        notesTop,
+        notesHeart,
+        notesBase,
+        photo: photo || PRESETS.amber,
+        prices: {
+          "10": p10,
+          "20": p20,
+          "30": p30,
+          "50": p50,
+          "100": p100
+        }
+      };
+
+      perfumes.unshift(newFrag);
+      storage.set("aura_perfumes", perfumes);
+
+      renderCatalog();
+      renderAdminCatalog();
+      showToast(`Аромат "${title}" опубликован в бутике!`, "✨");
+
+      // Reset form
+      document.getElementById("add-perfume-form").reset();
+      document.getElementById("new-photo-preview").src = PRESETS.amber;
+      document.getElementById("new-photo-url").value = "";
+
+      // Switch to catalog tab
+      const catTabBtn = document.querySelector(".admin-tab[data-tab='admin-catalog']");
+      switchAdminTab("admin-catalog", catTabBtn);
+    }
+
+    function deletePerfume(id) {
+      perfumes = perfumes.filter(p => p.id !== id);
+      storage.set("aura_perfumes", perfumes);
+      renderCatalog();
+      renderAdminCatalog();
+      showToast("Позиция удалена из бутика", "🗑️");
+    }
+
+    function renderAdminCatalog() {
+      const listEl = document.getElementById("admin-items-list");
+      const countEl = document.getElementById("admin-count");
+      if (countEl) countEl.textContent = perfumes.length;
+      if (!listEl) return;
+
+      listEl.innerHTML = perfumes.map(item => `
+        <div class="liquid-glass rounded-2xl p-2.5 border border-white/10 flex items-center justify-between space-x-3 text-xs">
+          <div class="w-10 h-10 rounded-xl overflow-hidden bg-black/40 border border-white/10 shrink-0">
+            <img src="${item.photo}" alt="${item.title}" class="w-full h-full object-cover">
+          </div>
+          <div class="flex-1 min-w-0">
+            <h4 class="font-serif font-medium text-white truncate">${item.title}</h4>
+            <p class="text-[10px] text-slate-400 truncate">${item.brand} • ${item.category} • 10мл: ${item.prices['10']}₽</p>
+          </div>
+          <div class="flex items-center space-x-2">
+            <button onclick="openProductDetails('${item.id}')" class="px-2 py-1 rounded-lg bg-white/10 text-[10px] text-slate-200 hover:bg-white/20">Просмотр</button>
+            <button onclick="deletePerfume('${item.id}')" class="p-1 rounded-lg bg-rose-500/15 text-rose-300 hover:bg-rose-500/30">
+              <svg class="w-3.5 h-3.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"/></svg>
+            </button>
+          </div>
+        </div>
+      `).join("");
+    }
+
+    function renderAdminOrders() {
+      const listEl = document.getElementById("admin-orders-list");
+      const countEl = document.getElementById("admin-orders-count");
+      if (countEl) countEl.textContent = adminOrders.length;
+      if (!listEl) return;
+
+      if (adminOrders.length === 0) {
+        listEl.innerHTML = `
+          <div class="liquid-glass rounded-2xl p-4 text-center text-xs text-slate-400 border border-white/10">
+            Пока нет новых заказов от покупателей.
+          </div>
+        `;
+        return;
+      }
+
+      listEl.innerHTML = adminOrders.map((ord, idx) => `
+        <div class="liquid-specular rounded-2xl p-3 border border-white/15 space-y-2 text-xs">
+          <div class="flex items-center justify-between border-b border-white/10 pb-1.5">
+            <span class="font-bold text-white font-serif">Заказ #${ord.orderId}</span>
+            <span class="text-gold-400 font-bold">${ord.grandTotal.toLocaleString()} ₽</span>
+          </div>
+          <div class="space-y-0.5 text-[11px] text-slate-300">
+            <p><strong>Клиент:</strong> ${ord.customer.name} (<a href="tel:${ord.customer.phone}" class="text-amber-400 underline">${ord.customer.phone}</a>)</p>
+            <p><strong>Адрес:</strong> ${ord.customer.address}</p>
+            <p><strong>Доставка:</strong> ${ord.customer.delivery}</p>
+            ${ord.customer.comment ? `<p><strong>Комментарий:</strong> ${ord.customer.comment}</p>` : ''}
+          </div>
+          <div class="pt-1 border-t border-white/5 space-y-1">
+            ${ord.items.map(it => `
+              <div class="flex justify-between text-[10px] text-slate-400">
+                <span>${it.title} (${it.volume === "100" ? "Флакон 100мл" : it.volume + " мл"}) × ${it.qty}</span>
+                <span>${(it.unitPrice * it.qty).toLocaleString()} ₽</span>
+              </div>
+            `).join("")}
+          </div>
+          <div class="pt-1.5 flex items-center justify-between">
+            <span class="text-[10px] text-slate-500">${ord.date}</span>
+            <button onclick="deleteAdminOrder(${idx})" class="text-[10px] text-rose-400 hover:text-rose-300">Удалить заказ</button>
+          </div>
+        </div>
+      `).join("");
+    }
+
+    function deleteAdminOrder(idx) {
+      adminOrders.splice(idx, 1);
+      storage.set("aura_admin_orders", adminOrders);
+      renderAdminOrders();
+      showToast("Заказ удален из системы");
+    }
+
+    function resetToDefaultData() {
+      perfumes = [...DEFAULT_PERFUMES];
+      storage.set("aura_perfumes", perfumes);
+      renderCatalog();
+      renderAdminCatalog();
+      showToast("Каталог сброшен к заводским позициям", "🔄");
+    }
+  </script>
+</body>
+</html>
